@@ -9,7 +9,7 @@ app.use(cors());
 const PORT = 4000;
 
 
-app.use('/api/v1/', streakRouter);
+app.use('/api/v1', streakRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

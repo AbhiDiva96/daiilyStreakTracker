@@ -12,42 +12,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateContributionStreak = exports.fetchContributionStreak = void 0;
+exports.calculateContributionStreak = exports.fetchContributionData = void 0;
 const axios_1 = __importDefault(require("axios"));
 const streakConf_1 = require("../config/streakConf");
-//here we will write all the business logic\
-const fetchContributionStreak = (userName) => __awaiter(void 0, void 0, void 0, function* () {
-    const query = `{
-     user(login: "${userName}"){
-        contributionsCollection{
-          contributionCalendar{
-            weeks{
-              contributionDays{
-                 date
-                 contributionCount 
+const fetchContributionData = (username) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = `
+    {
+      user(login: "${username}") {
+        contributionsCollection {
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
               }
             }
           }
         }
-     }
-  }`;
-    try {
-        const res = yield axios_1.default.post(streakConf_1.GITHUB_API_URL, { query: query }, {
-            headers: {
-                Authorization: `bearer ${streakConf_1.GITHUB_TOKEN}`,
-            }
-        });
-        //GET THE CONTRIBUTION STREAK
-        const contributionStreak = res.data.data.user.contributionsCollection.contributionCalendar.weeks.weeks.flatMap((week) => week.contributionDays)
-            .reverse();
-        return contributionStreak;
+      }
     }
-    catch (err) {
-        console.log(err);
-        throw new Error("Fetching contribution Streak is failed");
+  `;
+    try {
+        const response = yield axios_1.default.post(streakConf_1.GITHUB_API_URL, { query }, { headers: { Authorization: `Bearer ${streakConf_1.GITHUB_TOKEN}` } });
+        // Log the entire GitHub response for debugging
+        console.log("GitHub Response:", JSON.stringify(response.data, null, 2));
+        const user = response.data.data.user;
+        // Handle invalid username or missing contributions data
+        if (!user || !user.contributionsCollection) {
+            throw new Error("Invalid username or missing contributions data.");
+        }
+        return user.contributionsCollection.contributionCalendar.weeks
+            .flatMap((week) => week.contributionDays)
+            .reverse(); // Reverse to start from the latest date
+    }
+    catch (error) {
+        console.error("Error fetching data:", error.message);
+        throw new Error("Failed to fetch contribution data from GitHub.");
     }
 });
-exports.fetchContributionStreak = fetchContributionStreak;
+exports.fetchContributionData = fetchContributionData;
 const calculateContributionStreak = (contriutionDays) => {
     let streak = 0;
     for (const day of contriutionDays) {

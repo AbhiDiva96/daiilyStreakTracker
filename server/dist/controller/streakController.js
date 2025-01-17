@@ -12,27 +12,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getStreak = void 0;
 const streakServices_1 = require("../service/streakServices");
 const getStreak = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userName = req.query;
+    const userName = req.query.userName; // Access userName from query parameters
+    // Check if username is provided
     if (!userName) {
-        res.status(400).res.json({
-            message: "please provide username"
+        return res.status(400).json({
+            message: "Please provide a username."
         });
-        return;
     }
     try {
-        const contributionStreak = yield (0, streakServices_1.fetchContributionStreak)(userName);
+        // Fetch contribution data for the user
+        const contributionStreak = yield (0, streakServices_1.fetchContributionData)(userName);
         const streak = (0, streakServices_1.calculateContributionStreak)(contributionStreak);
+        // Return the success response with the streak data
         res.status(200).json({
-            message: 'success',
+            message: 'Success',
             userName,
             streak
         });
     }
     catch (err) {
+        console.error("Error fetching streak:"); // Log the error for debugging
         res.status(500).json({
-            message: 'something went wrong'
+            message: 'Something went wrong while fetching the contribution data.',
         });
-        return;
     }
 });
 exports.getStreak = getStreak;

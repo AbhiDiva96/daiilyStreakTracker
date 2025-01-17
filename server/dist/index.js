@@ -10,7 +10,7 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 const PORT = 4000;
-app.use('/api/v1/', streak_1.streakRouter);
+app.use('/api/v1', streak_1.streakRouter);
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });

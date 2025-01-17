@@ -2,52 +2,54 @@ import axios from 'axios';
 import { GITHUB_API_URL, GITHUB_TOKEN } from '../config/streakConf';
 
 interface ContributionDay {
-    date: string;
-    contributionCount: number;
+   date: string;
+   contributionCount: number;
 }
 
-//here we will write all the business logic\
-
-export const fetchContributionStreak = async (userName: string) => {
-    
-
-  const query = `{
-     user(login: "${userName}"){
-        contributionsCollection{
-          contributionCalendar{
-            weeks{
-              contributionDays{
-                 date
-                 contributionCount 
+export const fetchContributionData = async (username: string): Promise<ContributionDay[]> => {
+  const query = `
+    {
+      user(login: "${username}") {
+        contributionsCollection {
+          contributionCalendar {
+            weeks {
+              contributionDays {
+                date
+                contributionCount
               }
             }
           }
         }
-     }
-  }`;
+      }
+    }  
+  `;
 
-  try{
-       const res = await axios.post(
-          GITHUB_API_URL,
-          {query: query},
-          {
-            headers: {
-                Authorization: `bearer ${GITHUB_TOKEN}`,
-            }
-          }
-       )
+  try {
+    const response = await axios.post(
+      GITHUB_API_URL,
+      { query },
+      { headers: { Authorization: `Bearer ${GITHUB_TOKEN}` } }
+    );
 
-       //GET THE CONTRIBUTION STREAK
-       const contributionStreak = res.data.data.user.contributionsCollection.contributionCalendar.weeks.weeks.flatMap((week: any) => week.contributionDays)
-       .reverse()
+    // Log the entire GitHub response for debugging
+    console.log("GitHub Response:", JSON.stringify(response.data, null, 2));
 
-       return contributionStreak;
+    const user = response.data.data.user;
 
-  }catch(err){
-     console.log(err);
-     throw new Error("Fetching contribution Streak is failed");
+    // Handle invalid username or missing contributions data
+    if (!user || !user.contributionsCollection) {
+      throw new Error("Invalid username or missing contributions data.");
+    }
+
+    return user.contributionsCollection.contributionCalendar.weeks
+      .flatMap((week: any) => week.contributionDays)
+      .reverse(); // Reverse to start from the latest date
+  } catch (error: any) {
+    console.error("Error fetching data:", error.message);
+    throw new Error("Failed to fetch contribution data from GitHub.");
   }
 };
+
 
 export const calculateContributionStreak = (contriutionDays : ContributionDay[]) => {
           
