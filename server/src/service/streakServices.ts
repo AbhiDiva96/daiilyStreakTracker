@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { GITHUB_API_URL, GITHUB_TOKEN } from '../config/streakConf';
+import axios from "axios";
+import { GITHUB_API_URL, GITHUB_TOKEN } from "../config/streakConf";
 
 interface ContributionDay {
-   date: string;
-   contributionCount: number;
+  date: string;
+  contributionCount: number;
 }
 
 export const fetchContributionData = async (username: string): Promise<ContributionDay[]> => {
@@ -21,7 +21,7 @@ export const fetchContributionData = async (username: string): Promise<Contribut
           }
         }
       }
-    }  
+    }
   `;
 
   try {
@@ -31,39 +31,26 @@ export const fetchContributionData = async (username: string): Promise<Contribut
       { headers: { Authorization: `Bearer ${GITHUB_TOKEN}` } }
     );
 
-    // Log the entire GitHub response for debugging
-    console.log("GitHub Response:", JSON.stringify(response.data, null, 2));
-
-    const user = response.data.data.user;
-
-    // Handle invalid username or missing contributions data
-    if (!user || !user.contributionsCollection) {
-      throw new Error("Invalid username or missing contributions data.");
-    }
-
-    return user.contributionsCollection.contributionCalendar.weeks
+    const contributionDays: ContributionDay[] = response.data.data.user.contributionsCollection.contributionCalendar.weeks
       .flatMap((week: any) => week.contributionDays)
       .reverse(); // Reverse to start from the latest date
-  } catch (error: any) {
-    console.error("Error fetching data:", error.message);
+
+    return contributionDays;
+  } catch (error) {
     throw new Error("Failed to fetch contribution data from GitHub.");
   }
 };
 
+export const calculateStreak = (contributionDays: ContributionDay[]): number => {
+  let streak = 0;
 
-export const calculateContributionStreak = (contriutionDays : ContributionDay[]) => {
-          
-         let streak = 0;
+  for (const day of contributionDays) {
+    if (day.contributionCount > 0) {
+      streak++;
+    } else {
+      break; // Streak ends on the first day without contributions
+    }
+  }
 
-         for(const day of contriutionDays){
-            if(day.contributionCount > 0){
-                streak++;
-            }else{
-                break;
-            }
-         }
-
-         return streak;
-}
-
-
+  return streak;
+};

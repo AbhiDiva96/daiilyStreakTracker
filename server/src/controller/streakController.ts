@@ -1,31 +1,24 @@
-import { calculateContributionStreak, fetchContributionData } from "../service/streakServices";
+import { Request, Response } from "express";
+import { calculateStreak, fetchContributionData } from "../service/streakServices";
 
-export const getStreak = async (req: any, res: any) => {
-   const userName = req.query.userName; // Access userName from query parameters
+export const getStreak = async (req: Request, res: Response): Promise<void> => {
+  const { username } = req.query;
 
-   // Check if username is provided
-   if (!userName) {
-      return res.status(400).json({
-         message: "Please provide a username."
-      });
-   }
+  if (!username || typeof username !== "string") {
+    res.status(400).json({ error: "Username is required and must be a string." });
+    return;
+  }
 
-   try {
-      // Fetch contribution data for the user
-      const contributionStreak = await fetchContributionData(userName);
-      const streak = calculateContributionStreak(contributionStreak);
+  try {
+    const contributionDays = await fetchContributionData(username);
+    const streak = calculateStreak(contributionDays);
 
-      // Return the success response with the streak data
-      res.status(200).json({
-         message: 'Success',
-         userName,
-         streak
-      });
-
-   } catch (err) {
-      console.error("Error fetching streak:"); // Log the error for debugging
-      res.status(500).json({
-         message: 'Something went wrong while fetching the contribution data.',
-      });
-   }
-}
+    res.status(200).json({ 
+      username, 
+      streak,
+       contributionDays
+   });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

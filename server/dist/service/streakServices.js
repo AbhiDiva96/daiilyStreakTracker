@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateContributionStreak = exports.fetchContributionData = void 0;
+exports.calculateStreak = exports.fetchContributionData = void 0;
 const axios_1 = __importDefault(require("axios"));
 const streakConf_1 = require("../config/streakConf");
 const fetchContributionData = (username) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,33 +34,26 @@ const fetchContributionData = (username) => __awaiter(void 0, void 0, void 0, fu
   `;
     try {
         const response = yield axios_1.default.post(streakConf_1.GITHUB_API_URL, { query }, { headers: { Authorization: `Bearer ${streakConf_1.GITHUB_TOKEN}` } });
-        // Log the entire GitHub response for debugging
-        console.log("GitHub Response:", JSON.stringify(response.data, null, 2));
-        const user = response.data.data.user;
-        // Handle invalid username or missing contributions data
-        if (!user || !user.contributionsCollection) {
-            throw new Error("Invalid username or missing contributions data.");
-        }
-        return user.contributionsCollection.contributionCalendar.weeks
+        const contributionDays = response.data.data.user.contributionsCollection.contributionCalendar.weeks
             .flatMap((week) => week.contributionDays)
             .reverse(); // Reverse to start from the latest date
+        return contributionDays;
     }
     catch (error) {
-        console.error("Error fetching data:", error.message);
         throw new Error("Failed to fetch contribution data from GitHub.");
     }
 });
 exports.fetchContributionData = fetchContributionData;
-const calculateContributionStreak = (contriutionDays) => {
+const calculateStreak = (contributionDays) => {
     let streak = 0;
-    for (const day of contriutionDays) {
+    for (const day of contributionDays) {
         if (day.contributionCount > 0) {
             streak++;
         }
         else {
-            break;
+            break; // Streak ends on the first day without contributions
         }
     }
     return streak;
 };
-exports.calculateContributionStreak = calculateContributionStreak;
+exports.calculateStreak = calculateStreak;
