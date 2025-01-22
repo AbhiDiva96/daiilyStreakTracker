@@ -16,7 +16,7 @@ export const getStreak = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ 
       username, 
       streak,
-       contributionDays
+      contributionDays
    });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
