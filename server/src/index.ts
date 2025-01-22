@@ -13,6 +13,9 @@ const PORT = 4000;
 app.use('/api/v1', streakRouter);
 app.use('/api/v1', githubRouter)
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
 
 
 app.listen(PORT, () => {
