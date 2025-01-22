@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // Access state and navigation
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import ReactCalendarHeatmap from 'react-calendar-heatmap';
-import 'react-calendar-heatmap/dist/styles.css'; // Heatmap styles
-import { api } from '../api/api'; // API helper for backend requests
+import 'react-calendar-heatmap/dist/styles.css';
+import { api } from '../api/api';
 
 interface ContributionDay {
   date: string;
@@ -12,31 +12,37 @@ interface ContributionDay {
 export const StreakTracker = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [contributions, setContributions] = useState<ContributionDay[]>([]); // State for contributions
-  const username = location.state?.username; // Retrieve the username from the state passed via navigation
+  const [username, setUsername] = useState<string>('');
+  const [contributions, setContributions] = useState<ContributionDay[]>([]);
 
   useEffect(() => {
-    if (!username) {
-      // Redirect back to Home if no username is provided
-      alert('No username provided. Redirecting back to Home...');
+    // Retrieve the username from state or localStorage
+    const stateUsername = location.state?.username;
+    const storedUsername = localStorage.getItem('githubUsername');
+    const user = stateUsername || storedUsername;
+
+    if (user) {
+      setUsername(user);
+      fetchContributions(user);
+      navigate('/dashboard');
+    } else {
+      // If no username is available, redirect back to the Home page
       navigate('/');
-      return;
     }
+  }, [location.state, navigate]);
 
-    // Fetch user data if username exists
-    const fetchContributions = async () => {
-      try {
-        const response = await api.get(`/streak?username=${username}`);
-        setContributions(response.data.contributionDays || []);
-      } catch (error) {
-        console.error('Error fetching contributions:', error);
-        alert('Failed to fetch contributions. Redirecting back to Home...');
-        navigate('/');
-      }
-    };
-
-    fetchContributions();
-  }, [username, navigate]);
+   const logout = () => {
+       localStorage.removeItem('githubUsername');
+       navigate('/home');
+   }
+  const fetchContributions = async (user: string) => {
+    try {
+      const response = await api.get(`/streak?username=${user}`);
+      setContributions(response.data.contributionDays || []);
+    } catch (error) {
+      console.error('Error fetching contributions:', error);
+    }
+  };
 
   const heatmapValues = contributions.map((day) => ({
     date: day.date,
@@ -47,8 +53,10 @@ export const StreakTracker = () => {
   const endDate = contributions.length > 0 ? contributions[0].date : '';
 
   return (
-    <div className="Dashboard">
+    <div>
       <h1>GitHub Contributions for {username}</h1>
+
+        <button onClick={logout}>Logout</button>
       {contributions.length > 0 ? (
         <ReactCalendarHeatmap
           startDate={startDate ? new Date(startDate) : new Date()}
