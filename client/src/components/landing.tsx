@@ -25,22 +25,18 @@ export const  LandingPage = () => {
         </nav>
       </header>
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gray-900">
+        <section className="w-full py-10 md:py-24 lg:py-20 xl:py-40 bg-gray-900">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                     <h1 className="text-3xl px-64 font-sans  font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-             Now easily get Track of you daily contribution on GITHUB
-                </h1>
-                <h2 className="text-3xl font-bold ">
-                  Boost Your GitHub Productivity 
-                </h2>
-           
+                     <h1 className="text-3xl md:px-32 font-sans  font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                        Now easily get track of you daily contribution on github
+                </h1>  
                 <p className="mx-auto max-w-[700px] text-gray-300 md:text-xl">
                   Track your GitHub streaks, set goals, and stay motivated with our premium features.
                 </p>
               </div>
-              <div className="space-x-4">
+              <div className="space-x-4 py-4">
                 <Button className="bg-green-500 hover:bg-green-600 text-white"
                    onClick={()=>{navigate('/home')}}
                 >Get Started</Button>
@@ -48,6 +44,9 @@ export const  LandingPage = () => {
                   Learn More
                 </Button>
               </div>
+               <h2 className="text-2xl font-bold md:text-4xl lg:text-6xl/none pt-16">
+                  Boost Your GitHub Productivity 
+                </h2>
             </div>
           </div>
         </section>
@@ -197,7 +196,7 @@ export const  LandingPage = () => {
         </section>
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-gray-800 bg-gray-900">
-        <p className="text-xs text-gray-400">© 2024 StreakTracker. All rights reserved.</p>
+        <p className="text-xs text-gray-400">©2025 StreakTracker. All rights reserved.</p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link className="text-xs hover:underline underline-offset-4 text-gray-400" to="#">
             Terms of Service

@@ -11,9 +11,7 @@ export const Home = () => {
 
     if(storedUsername){
         setUsername(storedUsername);
-        navigate('/dashboard', {
-            state: {username: storedUsername}
-        })
+        navigate('/dashboard')
     }
    }, [navigate]);
 

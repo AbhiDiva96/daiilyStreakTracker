@@ -53,10 +53,20 @@ export const StreakTracker = () => {
   const endDate = contributions.length > 0 ? contributions[0].date : '';
 
   return (
-    <div>
-      <h1>GitHub Contributions for {username}</h1>
+    <div className='w-full h-screen bg-gray-900 text-white pt-20'>
 
-        <button onClick={logout}>Logout</button>
+       <div className='flex justify-center items-center text-3xl font-bold'>
+            Your Daily contribution
+          </div>
+        <div className='flex flex-row items-center justify-between px-12 py-10 '>
+         <h1 className='flex text-xl'>GitHub Contributions of <p className='text-green-500 pl-4 font-bold'>
+            {username}
+            </p></h1>
+         <button onClick={logout}
+          className='border border-gray-800 bg-gray-800 rounded-lg p-2 text-center text-white-800'
+         >Logout</button>
+        </div>
+
       {contributions.length > 0 ? (
         <ReactCalendarHeatmap
           startDate={startDate ? new Date(startDate) : new Date()}
