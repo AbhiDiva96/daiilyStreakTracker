@@ -5,3 +5,22 @@
 ![Screenshot (554)](https://github.com/user-attachments/assets/eb76fc17-890f-4fc0-888e-f176deb99dd6)
 
 ![Screenshot (552)](https://github.com/user-attachments/assets/72ae58fb-d508-4c8e-bf84-89ecd25af83b)
+
+
+```bash
+    git clone https://github.com/AbhiDiva96/daiilyStreakTracker.git 
+```
+
+## server
+ ```bash
+     cd server
+     npm install
+     npm run dev
+ ```
+
+## client
+  ```bash
+    cd client
+    npm install
+    npm run dev
+```
