@@ -59,7 +59,7 @@ export const StreakTracker = () => {
             Your Daily contribution
           </div>
         <div className='flex flex-row items-center justify-between px-12 py-10 '>
-         <h1 className='flex text-xl'>GitHub Contributions of <p className='text-green-500 pl-4 font-bold'>
+         <h1 className='flex flex-col text-xl '>GitHub Contributions of <p className='text-green-500 pl-4 font-bold '>
             {username}
             </p></h1>
          <button onClick={logout}
