@@ -58,8 +58,8 @@ export const StreakTracker = () => {
        <div className='flex justify-center items-center text-3xl font-bold'>
             Your Daily contribution
           </div>
-        <div className='flex flex-row items-center justify-between px-12 py-10 '>
-         <h1 className='flex flex-col text-xl '>GitHub Contributions of <p className='text-green-500 pl-4 font-bold '>
+        <div className='flex flex-row items-center justify-between px-12 py-10 gap-4 '>
+         <h1 className='flex flex-col text-xl '>GitHub Contributions of <p className='text-green-500 font-bold '>
             {username}
             </p></h1>
          <button onClick={logout}
